@@ -41,7 +41,11 @@ static int cpuid(int cpu, uint32_t leaf, uint32_t subleaf, struct cpuid *data)
 		char devstr[64];
 		if (fd >= 0)
 			close(fd);
+#ifdef __ANDROID__
+		snprintf(devstr, sizeof devstr, "/dev/cpu%d", cpu);
+#else
 		snprintf(devstr, sizeof devstr, "/dev/cpu/%d/cpuid", cpu);
+#endif
 		fd = open(devstr, O_RDONLY);
 		if (fd < 0) {
 			if (errno == ENXIO) {
